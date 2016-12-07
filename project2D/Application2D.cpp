@@ -87,6 +87,18 @@ void Application2D::update(float deltaTime) {
 		m_shooting->play();
 		Donray.m_Shooting = true;
 	}  
+	if (input->isKeyDown(aie::INPUT_KEY_KP_ADD))
+	{
+		m_audio->setGain(-1.0);
+	}
+	if (input->isKeyDown(aie::INPUT_KEY_KP_DECIMAL))
+	{
+		m_audio->setGain(1.0);
+	}
+	if (input->wasKeyPressed(aie::INPUT_KEY_P))
+	{
+		m_audio->pause();
+	}
 	if (Donray.m_Shooting == true)
 	{
 		Bullet.m_bulletSpeed += 3;

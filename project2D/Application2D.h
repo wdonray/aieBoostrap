@@ -17,7 +17,6 @@ class Shoot {
 public:
 	Vector2 m_Position;
 	int m_bulletSpeed;
-
 };
 class Application2D : public aie::Application {
 public:
@@ -54,3 +53,4 @@ protected:
 	float m_cameraX, m_cameraY;
 	float m_timer;
 };
+
