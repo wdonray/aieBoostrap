@@ -78,7 +78,7 @@ void Application::run(const char* title, int width, int height, bool fullscreen)
 		// variables for timing
 		double prevTime = glfwGetTime();
 		double currTime = 0;
-		double deltaTime = 0;
+   		double deltaTime = 0;
 		unsigned int frames = 0;
 		double fpsInterval = 0;
 

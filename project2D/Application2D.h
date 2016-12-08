@@ -8,6 +8,11 @@ class Player {
 public:
 	Vector2 m_Position;
 	bool m_Shooting;
+	float m_size = 75;
+	bool m_userHit = false;
+	bool m_enemyHit = false;
+	int m_userHP;
+	int m_enemyHP;
 };
 class Object {
 public:
@@ -36,19 +41,28 @@ protected:
 	aie::Texture*		m_texture;
 	aie::Texture*		m_shipTexture;
 	aie::Texture*		m_shipTexture1;
+	aie::Texture*		m_grass;
+	aie::Texture*		m_grassball;
 	aie::Texture*		m_Rock;
 	aie::Texture*		m_Rock1;
 	aie::Font*			m_font;
 	aie::Audio*			m_shooting;
 	aie::Audio*			m_audio;
-
-	Player Donray;
-	Player Teacher;
+	aie::Audio*			m_pain;
+	
+	Player User;
+	Player Enemy;
 
 	Shoot Bullet;
+	Shoot Bullet2;
 
 	Object Rock;
 	Object Rock1;
+
+	bool m_GameOver;
+
+	int m_healthBarCompensator; // Since you are taking HP away you need something that is moving upwards to get
+	//my enemy health bar moving right
 
 	float m_cameraX, m_cameraY;
 	float m_timer;
