@@ -4,6 +4,7 @@
 #include "Input.h"
 #include <time.h>
 #include <Windows.h>
+#include <fstream>
 #define True true
 #define False false
 
@@ -160,6 +161,7 @@ void Application2D::update(float deltaTime) {
 		shutdown();
 		startup();
 	}
+	
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE)) 	// Exit the application
 		quit();
 
