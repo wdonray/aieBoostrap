@@ -26,9 +26,6 @@ bool Application2D::startup() {
 	m_grass = new aie::Texture("./textures/tallgrass.png");
 	m_grassball = new aie::Texture("./textures/grassball.png");
 
-	m_Rock = new aie::Texture("./textures/rock_large.png");
-	m_Rock1 = new aie::Texture("./textures/rock_small.png");
-
 	m_font = new aie::Font("./font/consolas.ttf", 32);
 
 	m_shooting = new aie::Audio("./audio/powerup.wav");
@@ -42,9 +39,6 @@ bool Application2D::startup() {
 	User.m_Position = Vector2(50, 370);
 	Enemy.m_Position = Vector2(1240, 370);
 
-	Rock.m_Position = Vector2(600, 370);
-	Rock1.m_Position = Vector2(500, 470);
-
 	Bullet.m_Position = Vector2(40, 370);
 	Bullet2.m_Position = Vector2(1240, 370);
 
@@ -55,9 +49,9 @@ bool Application2D::startup() {
 	User.m_userHP = 5;
 	Enemy.m_enemyHP = 5;
 
-
 	m_healthBarCompensator = 0;
-	m_GameOver = false;
+	m_GameOver = False;
+
 	return true;
 }
 
@@ -72,8 +66,6 @@ void Application2D::shutdown() {
 	delete m_shipTexture1;
 	delete m_grass;
 	delete m_grassball;
-	delete m_Rock;
-	delete m_Rock1;
 	delete m_2dRenderer;
 }
 
@@ -81,10 +73,15 @@ void Application2D::update(float deltaTime) {
 
 	m_timer += deltaTime;
 
+	for (int i = 0; i++;)
+	{
+		count++;
+	}
+
 	aie::Input* input = aie::Input::getInstance();
 
-
-	m_audio->play(); // play old school music whole time 
+	// play old school music whole time 
+	m_audio->play(); 
 
 	// use arrow keys to move player
 	if (input->isKeyDown(aie::INPUT_KEY_W) && User.m_Position.y < 680) //To not go out of range of windows size 
@@ -99,54 +96,43 @@ void Application2D::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_DOWN) && Enemy.m_Position.y > 40)
 		Enemy.m_Position = Enemy.m_Position - Vector2(0, 10);
 
-	if (input->isKeyDown(aie::INPUT_KEY_SPACE) && User.m_Shooting == False)
-	{
-		Bullet.m_Position.y = User.m_Position.y;
-		Bullet.m_bulletSpeed = 0;
-		m_shooting->play();
-		User.m_Shooting = True;
-	}
+	// Player movement
+	(input->isKeyDown(aie::INPUT_KEY_SPACE) && User.m_Shooting == False) ?
+	(Bullet.m_Position.y = User.m_Position.y,
+	Bullet.m_bulletSpeed = 0,
+	m_shooting->play(), 
+	User.m_Shooting = True) : 0;
+	// Second player movement
+	(input->isKeyDown(aie::INPUT_KEY_RIGHT_CONTROL) && Enemy.m_Shooting == False) ?
+	(Bullet2.m_Position.y = Enemy.m_Position.y, 
+	Bullet2.m_bulletSpeed = 0,
+	m_shooting->play(),
+	Enemy.m_Shooting = True) : 0;
 
-	if (input->isKeyDown(aie::INPUT_KEY_RIGHT_CONTROL) && Enemy.m_Shooting == False)
-	{
-		Bullet2.m_Position.y = Enemy.m_Position.y;
-		Bullet2.m_bulletSpeed = 0;
-		m_shooting->play();
-		Enemy.m_Shooting = True;
-	}
-	if (input->isKeyDown(aie::INPUT_KEY_P))
-	{
-		m_audio->pause();
-	}
-	if (User.m_Shooting == True) // Bullet Speed 
-	{
-		Bullet.m_bulletSpeed += 3;
-	}
-	if (Enemy.m_Shooting == True)
-	{
-		Bullet2.m_bulletSpeed -= 3;
-	}
-	if (Bullet.m_Position.x > 1280) // End of Bullet
-	{
-		User.m_Shooting = False;
-		Bullet.m_Position.x = 40; // Reset the position to shoot from middle of face
-	}
-	if (Bullet2.m_Position.x < 0)
-	{
-		Enemy.m_Shooting = False;
-		Bullet2.m_Position.x = 1240;
-	}
+	//Bullet Speed in a direction
+	(User.m_Shooting == True) ? Bullet.m_bulletSpeed += 3 : 0;
+	(Enemy.m_Shooting == True) ? Bullet2.m_bulletSpeed -= 3 : 0;
 
+	// End of Bullet				// Reset the position to shoot from middle of face
+	(Bullet.m_Position.x > 1280) ? (Bullet.m_Position.x = 40, User.m_Shooting = False) : 0;
+	(Bullet2.m_Position.x < 0) ? (Bullet2.m_Position.x = 1240, Enemy.m_Shooting = False) : 0;
+
+	// Update the position 
+	(User.m_Shooting == True) ? Bullet.m_Position.x += Bullet.m_bulletSpeed: 0;
+	(Enemy.m_Shooting == True)? Bullet2.m_Position.x += Bullet2.m_bulletSpeed: 0;
+
+
+	// Collision check for User bullet on enemy 
 	if (Enemy.m_Position.x - Enemy.m_size / 2 < Bullet.m_Position.x && Enemy.m_Position.x + Enemy.m_size / 2 > Bullet.m_Position.x
 		&& Enemy.m_Position.y - Enemy.m_size / 2 < Bullet.m_Position.y && Enemy.m_Position.y + Enemy.m_size / 2 > Bullet.m_Position.y)
 	{
-		m_pain->stop();
+		m_pain->stop(); // Stops sound each time to so sound can play every time
 		m_pain->play();
-		Enemy.m_enemyHit = True;
-		Enemy.m_enemyHP -= 1;
-		m_healthBarCompensator++;
+		Enemy.m_enemyHit = True; // Set this bool to true to be used later
+		Enemy.m_enemyHP -= 1; // Reduce hp by one each time 
+		m_healthBarCompensator++; // To compensate for HP bar moving right instead of left 
 	}
-
+	// Collision check for enemy bullet on user
 	if (User.m_Position.x - User.m_size / 2 < Bullet2.m_Position.x && User.m_Position.x + User.m_size / 2 > Bullet2.m_Position.x
 		&&User.m_Position.y - User.m_size / 2 < Bullet2.m_Position.y && User.m_Position.y + User.m_size / 2 > Bullet2.m_Position.y)
 	{
@@ -155,23 +141,20 @@ void Application2D::update(float deltaTime) {
 		User.m_userHit = True;
 		User.m_userHP -= 1;
 	}
-
-	if (input->isKeyDown(aie::INPUT_KEY_R) && m_GameOver == false)
-	{
-		shutdown();
-		startup();
-	}
+	// Game Reset in any state 
+	(input->isKeyDown(aie::INPUT_KEY_R) && m_GameOver == False) ? (shutdown(), startup()) : 0;
 	
-	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE)) 	// Exit the application
-		quit();
+	// If HP gets to 0 close game 
+	(User.m_userHP == 0 || Enemy.m_enemyHP == 0) ? quit() : 0; 
 
+	// Exit the application
+	(input->isKeyDown(aie::INPUT_KEY_ESCAPE)) ? quit() : 0;
 }
 
 void Application2D::draw() {
 
 	// wipe the screen to the background colour
 	clearScreen();
-
 
 	// set the camera position before we begin rendering
 	m_2dRenderer->setCameraPos(m_cameraX, m_cameraY);
@@ -185,10 +168,6 @@ void Application2D::draw() {
 	// demonstrate spinning playable character
 	m_2dRenderer->setUVRect(0, 0, 1, 1);
 	m_2dRenderer->drawSprite(m_shipTexture, User.m_Position.x, User.m_Position.y, User.m_size, User.m_size, m_timer);
-
-	// draw a rotating rock in the center of scren
-	m_2dRenderer->drawSprite(m_Rock, 600, sin(m_timer) * 500 + 600, 100, 100, m_timer, 1);
-	m_2dRenderer->drawSprite(m_Rock1, 500, sin(m_timer) * -300 + 600, 50, 50, m_timer, 1);
 
 	// draw a moving frowny face
 	m_2dRenderer->setRenderColour(1, 0, 1, 1);
@@ -206,6 +185,7 @@ void Application2D::draw() {
 	m_2dRenderer->drawText(m_font, "Your HP", 0, 55);
 	m_2dRenderer->drawText(m_font, "His HP", 1170, 55);
 
+	// Draws intergers that get lowered on each hit
 	m_2dRenderer->setRenderColour(1, 1, 1, 1);
 	char test[16];
 	sprintf_s(test, 16, "%i", User.m_userHP);
@@ -215,6 +195,12 @@ void Application2D::draw() {
 	sprintf_s(test2, 16, "%i", Enemy.m_enemyHP);
 	m_2dRenderer->drawText(m_font, test2, 1260, 0);
 
+	// Game counter 
+	char counter[15];
+	sprintf_s(counter, 15, "%i", count);
+	m_2dRenderer->drawText(m_font, counter,300,0);
+
+	// Draw HP bars that lower on each hit 
 	m_2dRenderer->setRenderColour(0, 1, 0, 1);
 	m_2dRenderer->drawBox(0 + (User.m_userHP * 50) / 2, 10, User.m_userHP * 50, 20, 0, 0);
 	m_2dRenderer->setRenderColour(1, 0, 0, 1);
@@ -224,20 +210,14 @@ void Application2D::draw() {
 	if (User.m_Shooting == True)
 	{
 		m_2dRenderer->setRenderColour(0, 1, 0, 1);
-		Bullet.m_Position.x += Bullet.m_bulletSpeed;
 		m_2dRenderer->drawBox(Bullet.m_Position.x, Bullet.m_Position.y, 20, 5, 0, 0);
 	}
 	if (Enemy.m_Shooting == True)
 	{
 		m_2dRenderer->setRenderColour(0, 0, 1, 1);
-		Bullet2.m_Position.x += Bullet2.m_bulletSpeed;
 		m_2dRenderer->drawBox(Bullet2.m_Position.x, Bullet2.m_Position.y, 20, 5, 0, 0);
 	}
-	if (User.m_userHP == 0 || Enemy.m_enemyHP == 0)
-	{
-		m_GameOver = true;
-		quit();
-	}
+
 	// done drawing sprites
 	m_2dRenderer->end();
 }

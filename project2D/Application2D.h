@@ -15,10 +15,7 @@ public:
 	int m_userHP;
 	int m_enemyHP;
 };
-class Object {
-public:
-	Vector2 m_Position;
-};
+
 class Shoot {
 public:
 	Vector2 m_Position;
@@ -44,8 +41,6 @@ protected:
 	aie::Texture*		m_shipTexture1;
 	aie::Texture*		m_grass;
 	aie::Texture*		m_grassball;
-	aie::Texture*		m_Rock;
-	aie::Texture*		m_Rock1;
 	aie::Font*			m_font;
 	aie::Audio*			m_shooting;
 	aie::Audio*			m_audio;
@@ -57,10 +52,9 @@ protected:
 	Shoot Bullet;
 	Shoot Bullet2;
 
-	Object Rock;
-	Object Rock1;
-
 	bool m_GameOver;
+
+	int count = 0;
 
 	int m_healthBarCompensator; // Since you are taking HP away you need something that is moving upwards to get
 	//my enemy health bar moving right
