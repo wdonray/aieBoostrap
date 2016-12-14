@@ -73,7 +73,7 @@ void Application2D::update(float deltaTime) {
 
 	m_timer += deltaTime;
 
-	for (int i = 0; i++;)
+	while (count > -1)
 	{
 		count++;
 	}
