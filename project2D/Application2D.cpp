@@ -52,7 +52,7 @@ bool Application2D::startup() {
 	m_healthBarCompensator = 0;
 	m_GameOver = False;
 
-	return true;
+	return True;
 }
 
 void Application2D::shutdown() {
