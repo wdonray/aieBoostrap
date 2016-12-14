@@ -76,7 +76,7 @@ void Application2D::update(float deltaTime) {
 	aie::Input* input = aie::Input::getInstance();
 
 	// play old school music whole time 
-	m_audio->play(); 
+	m_audio->play();
 
 	// use arrow keys to move player
 	if (input->isKeyDown(aie::INPUT_KEY_W) && User.m_Position.y < 680) //To not go out of range of windows size 
@@ -93,16 +93,16 @@ void Application2D::update(float deltaTime) {
 
 	// Player movement
 	(input->isKeyDown(aie::INPUT_KEY_SPACE) && User.m_Shooting == False) ?
-	(Bullet.m_Position.y = User.m_Position.y,
-	Bullet.m_bulletSpeed = 0,
-	m_shooting->play(), 
-	User.m_Shooting = True) : 0;
+		(Bullet.m_Position.y = User.m_Position.y,
+			Bullet.m_bulletSpeed = 0,
+			m_shooting->play(),
+			User.m_Shooting = True) : 0;
 	// Second player movement
 	(input->isKeyDown(aie::INPUT_KEY_RIGHT_CONTROL) && Enemy.m_Shooting == False) ?
-	(Bullet2.m_Position.y = Enemy.m_Position.y, 
-	Bullet2.m_bulletSpeed = 0,
-	m_shooting->play(),
-	Enemy.m_Shooting = True) : 0;
+		(Bullet2.m_Position.y = Enemy.m_Position.y,
+			Bullet2.m_bulletSpeed = 0,
+			m_shooting->play(),
+			Enemy.m_Shooting = True) : 0;
 
 	//Bullet Speed in a direction
 	(User.m_Shooting == True) ? Bullet.m_bulletSpeed += 3 : 0;
@@ -113,8 +113,8 @@ void Application2D::update(float deltaTime) {
 	(Bullet2.m_Position.x < 0) ? (Bullet2.m_Position.x = 1240, Enemy.m_Shooting = False) : 0;
 
 	// Update the position 
-	(User.m_Shooting == True) ? Bullet.m_Position.x += Bullet.m_bulletSpeed: 0;
-	(Enemy.m_Shooting == True)? Bullet2.m_Position.x += Bullet2.m_bulletSpeed: 0;
+	(User.m_Shooting == True) ? Bullet.m_Position.x += Bullet.m_bulletSpeed : 0;
+	(Enemy.m_Shooting == True) ? Bullet2.m_Position.x += Bullet2.m_bulletSpeed : 0;
 
 
 	// Collision check for User bullet on enemy 
@@ -138,9 +138,9 @@ void Application2D::update(float deltaTime) {
 	}
 	// Game Reset in any state 
 	(input->isKeyDown(aie::INPUT_KEY_R) && m_GameOver == False) ? (shutdown(), startup()) : 0;
-	
+
 	// If HP gets to 0 close game 
-	(User.m_userHP == 0 || Enemy.m_enemyHP == 0) ? quit() : 0; 
+	(User.m_userHP == 0 || Enemy.m_enemyHP == 0) ? quit() : 0;
 
 	// Exit the application
 	(input->isKeyDown(aie::INPUT_KEY_ESCAPE)) ? quit() : 0;
@@ -156,63 +156,68 @@ void Application2D::draw() {
 
 	// begin drawing sprites
 	m_2dRenderer->begin();
+	//if (m_GameOver == False)
+//	{
+		m_2dRenderer->drawSprite(m_grass, 640, 360, 0, 0, 0, 1);
+		//m_2dRenderer->drawSprite(m_grassball, 640, 360, 0, 0, m_timer, 0);
 
-	m_2dRenderer->drawSprite(m_grass, 640, 360, 0, 0, 0, 1);
-	//m_2dRenderer->drawSprite(m_grassball, 640, 360, 0, 0, m_timer, 0);
+		// demonstrate spinning playable character
+		m_2dRenderer->setUVRect(0, 0, 1, 1);
+		m_2dRenderer->drawSprite(m_shipTexture, User.m_Position.x, User.m_Position.y, User.m_size, User.m_size, m_timer);
 
-	// demonstrate spinning playable character
-	m_2dRenderer->setUVRect(0, 0, 1, 1);
-	m_2dRenderer->drawSprite(m_shipTexture, User.m_Position.x, User.m_Position.y, User.m_size, User.m_size, m_timer);
+		// draw a moving frowny face
+		m_2dRenderer->setRenderColour(1, 0, 1, 1);
+		m_2dRenderer->drawSprite(m_shipTexture1, Enemy.m_Position.x, Enemy.m_Position.y, Enemy.m_size, Enemy.m_size, m_timer);
 
-	// draw a moving frowny face
-	m_2dRenderer->setRenderColour(1, 0, 1, 1);
-	m_2dRenderer->drawSprite(m_shipTexture1, Enemy.m_Position.x, Enemy.m_Position.y, Enemy.m_size, Enemy.m_size, m_timer);
+		// output some text, uses the last used colour
+		char fps[32];
+		m_2dRenderer->setRenderColour(1, 1, 0, 1);
+		sprintf_s(fps, 32, "FPS: %i", getFPS());
+		m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
 
-	// output some text, uses the last used colour
-	char fps[32];
-	m_2dRenderer->setRenderColour(1, 1, 0, 1);
-	sprintf_s(fps, 32, "FPS: %i", getFPS());
-	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
+		m_2dRenderer->drawText(m_font, "Press Space and Right Ctrl to Shoot! / Press R to Restart!", 0, 720 - 64);
+		m_2dRenderer->drawText(m_font, "Arrow Keys to Move Teacher and W and S to Move Donray!", 0, 690 - 64);
 
-	m_2dRenderer->drawText(m_font, "Press Space and Right Ctrl to Shoot! / Press R to Restart!", 0, 720 - 64);
-	m_2dRenderer->drawText(m_font, "Arrow Keys to Move Teacher and W and S to Move Donray!", 0, 690 - 64);
+		m_2dRenderer->drawText(m_font, "Your HP", 0, 55);
+		m_2dRenderer->drawText(m_font, "His HP", 1170, 55);
 
-	m_2dRenderer->drawText(m_font, "Your HP", 0, 55);
-	m_2dRenderer->drawText(m_font, "His HP", 1170, 55);
+		// Draws intergers that get lowered on each hit
+		m_2dRenderer->setRenderColour(1, 1, 1, 1);
+		char test[16];
+		sprintf_s(test, 16, "%i", User.m_userHP);
+		m_2dRenderer->drawText(m_font, test, 0, 0);
 
-	// Draws intergers that get lowered on each hit
-	m_2dRenderer->setRenderColour(1, 1, 1, 1);
-	char test[16];
-	sprintf_s(test, 16, "%i", User.m_userHP);
-	m_2dRenderer->drawText(m_font, test, 0, 0);
+		char test2[16];
+		sprintf_s(test2, 16, "%i", Enemy.m_enemyHP);
+		m_2dRenderer->drawText(m_font, test2, 1260, 0);
 
-	char test2[16];
-	sprintf_s(test2, 16, "%i", Enemy.m_enemyHP);
-	m_2dRenderer->drawText(m_font, test2, 1260, 0);
+		//// Game counter 
+		//char counter[15];
+		//sprintf_s(counter, 15, "%i", count);
+		//m_2dRenderer->drawText(m_font, counter,300,0);
 
-	//// Game counter 
-	//char counter[15];
-	//sprintf_s(counter, 15, "%i", count);
-	//m_2dRenderer->drawText(m_font, counter,300,0);
-
-	// Draw HP bars that lower on each hit 
-	m_2dRenderer->setRenderColour(0, 1, 0, 1);
-	m_2dRenderer->drawBox(0 + (User.m_userHP * 50) / 2, 10, User.m_userHP * 50, 20, 0, 0);
-	m_2dRenderer->setRenderColour(1, 0, 0, 1);
-	m_2dRenderer->drawBox(1160 + (m_healthBarCompensator * 50) / 2, 10, Enemy.m_enemyHP * 50, 20, 0, 0);
-
-	// Draw Bullet to screen following the X and Y of the faces
-	if (User.m_Shooting == True)
-	{
+		// Draw HP bars that lower on each hit 
 		m_2dRenderer->setRenderColour(0, 1, 0, 1);
-		m_2dRenderer->drawBox(Bullet.m_Position.x, Bullet.m_Position.y, 20, 5, 0, 0);
-	}
-	if (Enemy.m_Shooting == True)
-	{
-		m_2dRenderer->setRenderColour(0, 0, 1, 1);
-		m_2dRenderer->drawBox(Bullet2.m_Position.x, Bullet2.m_Position.y, 20, 5, 0, 0);
-	}
+		m_2dRenderer->drawBox(0 + (User.m_userHP * 50) / 2, 10, User.m_userHP * 50, 20, 0, 0);
+		m_2dRenderer->setRenderColour(1, 0, 0, 1);
+		m_2dRenderer->drawBox(1160 + (m_healthBarCompensator * 50) / 2, 10, Enemy.m_enemyHP * 50, 20, 0, 0);
 
+		// Draw Bullet to screen following the X and Y of the faces
+		if (User.m_Shooting == True)
+		{
+			m_2dRenderer->setRenderColour(0, 1, 0, 1);
+			m_2dRenderer->drawBox(Bullet.m_Position.x, Bullet.m_Position.y, 20, 5, 0, 0);
+		}
+		if (Enemy.m_Shooting == True)
+		{
+			m_2dRenderer->setRenderColour(0, 0, 1, 1);
+			m_2dRenderer->drawBox(Bullet2.m_Position.x, Bullet2.m_Position.y, 20, 5, 0, 0);
+		}
+//	}
+	//else
+	//{
+
+	//}
 	// done drawing sprites
 	m_2dRenderer->end();
 }
