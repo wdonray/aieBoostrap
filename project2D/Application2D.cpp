@@ -73,11 +73,6 @@ void Application2D::update(float deltaTime) {
 
 	m_timer += deltaTime;
 
-	while (count > -1)
-	{
-		count++;
-	}
-
 	aie::Input* input = aie::Input::getInstance();
 
 	// play old school music whole time 
@@ -179,7 +174,7 @@ void Application2D::draw() {
 	sprintf_s(fps, 32, "FPS: %i", getFPS());
 	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
 
-	m_2dRenderer->drawText(m_font, "Press Space to Shoot! / Press ESC to Exit! / Press R to Restart!", 0, 720 - 64);
+	m_2dRenderer->drawText(m_font, "Press Space and Right Ctrl to Shoot! / Press R to Restart!", 0, 720 - 64);
 	m_2dRenderer->drawText(m_font, "Arrow Keys to Move Teacher and W and S to Move Donray!", 0, 690 - 64);
 
 	m_2dRenderer->drawText(m_font, "Your HP", 0, 55);
@@ -195,10 +190,10 @@ void Application2D::draw() {
 	sprintf_s(test2, 16, "%i", Enemy.m_enemyHP);
 	m_2dRenderer->drawText(m_font, test2, 1260, 0);
 
-	// Game counter 
-	char counter[15];
-	sprintf_s(counter, 15, "%i", count);
-	m_2dRenderer->drawText(m_font, counter,300,0);
+	//// Game counter 
+	//char counter[15];
+	//sprintf_s(counter, 15, "%i", count);
+	//m_2dRenderer->drawText(m_font, counter,300,0);
 
 	// Draw HP bars that lower on each hit 
 	m_2dRenderer->setRenderColour(0, 1, 0, 1);
