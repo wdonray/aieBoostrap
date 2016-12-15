@@ -54,10 +54,7 @@ protected:
 
 	bool m_GameOver;
 
-	int count = 0;
-
-	int m_healthBarCompensator; // Since you are taking HP away you need something that is moving upwards to get
-	//my enemy health bar moving right
+	int m_healthBarCompensator; // The health bar is moving to the left bc it is getting smaller so you need something to move opposite way to have it move right 
 
 	float m_cameraX, m_cameraY;
 	float m_timer;
