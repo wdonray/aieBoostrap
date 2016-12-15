@@ -156,7 +156,7 @@ void Application2D::draw() {
 
 	// begin drawing sprites
 	m_2dRenderer->begin();
-	//if (m_GameOver == False)
+	//if (m_GameOver == False) // Started to add a end game screen did not finish it 
 //	{
 		m_2dRenderer->drawSprite(m_grass, 640, 360, 0, 0, 0, 1);
 		//m_2dRenderer->drawSprite(m_grassball, 640, 360, 0, 0, m_timer, 0);
