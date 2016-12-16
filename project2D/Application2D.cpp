@@ -31,6 +31,7 @@ bool Application2D::startup() {
 	m_shooting = new aie::Audio("./audio/powerup.wav");
 	m_audio = new aie::Audio("./audio/music.wav");
 	m_pain = new aie::Audio("./audio/pain.wav");
+	//m_over = new aie::Audio("./audio/Over.wav");
 
 	m_cameraX = 0;
 	m_cameraY = 0;
@@ -60,6 +61,7 @@ void Application2D::shutdown() {
 	delete m_shooting;
 	delete m_audio;
 	delete m_pain;
+	//delete m_over;
 	delete m_font;
 	delete m_texture;
 	delete m_shipTexture;
@@ -91,14 +93,14 @@ void Application2D::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_DOWN) && Enemy.m_Position.y > 40)
 		Enemy.m_Position = Enemy.m_Position - Vector2(0, 10);
 
-	// Player movement
-	(input->isKeyDown(aie::INPUT_KEY_SPACE) && User.m_Shooting == False) ?
+	// Player Shooting
+	(input->isKeyDown(aie::INPUT_KEY_SPACE) && User.m_Shooting == False && m_GameOver == False) ?
 		(Bullet.m_Position.y = User.m_Position.y,
 			Bullet.m_bulletSpeed = 0,
 			m_shooting->play(),
 			User.m_Shooting = True) : 0;
-	// Second player movement
-	(input->isKeyDown(aie::INPUT_KEY_RIGHT_CONTROL) && Enemy.m_Shooting == False) ?
+	// Second Shooting
+	(input->isKeyDown(aie::INPUT_KEY_RIGHT_CONTROL) && Enemy.m_Shooting == False && m_GameOver == False) ?
 		(Bullet2.m_Position.y = Enemy.m_Position.y,
 			Bullet2.m_bulletSpeed = 0,
 			m_shooting->play(),
@@ -137,10 +139,14 @@ void Application2D::update(float deltaTime) {
 		User.m_userHP -= 1;
 	}
 	// Game Reset in any state 
-	(input->isKeyDown(aie::INPUT_KEY_R) && m_GameOver == False) ? (shutdown(), startup()) : 0;
+	(input->isKeyDown(aie::INPUT_KEY_R) && m_GameOver == True) ? (shutdown(), startup()) : 0;
 
 	// If HP gets to 0 close game 
-	(User.m_userHP == 0 || Enemy.m_enemyHP == 0) ? quit() : 0;
+	//(User.m_userHP == 0 || Enemy.m_enemyHP == 0) ? m_GameOver == True : 0;
+	if (User.m_userHP == 0 || Enemy.m_enemyHP == 0)
+	{
+		m_GameOver = True;
+	}
 
 	// Exit the application
 	(input->isKeyDown(aie::INPUT_KEY_ESCAPE)) ? quit() : 0;
@@ -156,8 +162,8 @@ void Application2D::draw() {
 
 	// begin drawing sprites
 	m_2dRenderer->begin();
-	//if (m_GameOver == False) // Started to add a end game screen did not finish it 
-//	{
+	if (m_GameOver == False) // Started to add a end game screen did not finish it 
+	{
 		m_2dRenderer->drawSprite(m_grass, 640, 360, 0, 0, 0, 1);
 		//m_2dRenderer->drawSprite(m_grassball, 640, 360, 0, 0, m_timer, 0);
 
@@ -213,11 +219,26 @@ void Application2D::draw() {
 			m_2dRenderer->setRenderColour(0, 0, 1, 1);
 			m_2dRenderer->drawBox(Bullet2.m_Position.x, Bullet2.m_Position.y, 20, 5, 0, 0);
 		}
-//	}
-	//else
-	//{
-
-	//}
+	}
+	else if (m_GameOver == True)
+	{
+		this->setBackgroundColour(0, 0, 0, 1);
+		if (Enemy.m_enemyHP == 0)
+		{ 
+		char Over[32];
+		sprintf_s(Over, 32, "Game Over, User 1 Won!");
+		m_2dRenderer->drawText(m_font, Over, 420, 400, 1);
+		}
+		else 
+		{ 
+		char Over[32];
+		sprintf_s(Over, 32, "Game Over, User 2 Won!");
+		m_2dRenderer->drawText(m_font, Over, 420, 400, 1);
+		}
+		char Restart[40];
+		sprintf_s(Restart, 40, "Press R.");
+		m_2dRenderer->drawText(m_font, Restart, 540, 40, 1);
+	}
 	// done drawing sprites
 	m_2dRenderer->end();
 }
