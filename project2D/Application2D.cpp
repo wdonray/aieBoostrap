@@ -31,7 +31,7 @@ bool Application2D::startup() {
 	m_shooting = new aie::Audio("./audio/powerup.wav");
 	m_audio = new aie::Audio("./audio/music.wav");
 	m_pain = new aie::Audio("./audio/pain.wav");
-	//m_over = new aie::Audio("./audio/Over.wav");
+	//m_AGameOver = new aie::Audio("./audio/over.wav");
 
 	m_cameraX = 0;
 	m_cameraY = 0;
@@ -61,7 +61,7 @@ void Application2D::shutdown() {
 	delete m_shooting;
 	delete m_audio;
 	delete m_pain;
-	//delete m_over;
+	//delete m_AGameOver;
 	delete m_font;
 	delete m_texture;
 	delete m_shipTexture;
@@ -139,7 +139,7 @@ void Application2D::update(float deltaTime) {
 		User.m_userHP -= 1;
 	}
 	// Game Reset in any state 
-	(input->isKeyDown(aie::INPUT_KEY_R) && m_GameOver == True) ? (shutdown(), startup()) : 0;
+	(input->isKeyDown(aie::INPUT_KEY_R) && m_GameOver == True)? (shutdown(), startup()) : 0;
 
 	// If HP gets to 0 close game 
 	//(User.m_userHP == 0 || Enemy.m_enemyHP == 0) ? m_GameOver == True : 0;

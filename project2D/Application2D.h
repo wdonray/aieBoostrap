@@ -45,7 +45,7 @@ protected:
 	aie::Audio*			m_shooting;
 	aie::Audio*			m_audio;
 	aie::Audio*			m_pain;
-	//aie::Audio*			m_over;
+	//aie::Audio*			m_AGameOver;
 	
 	Player User;
 	Player Enemy;
