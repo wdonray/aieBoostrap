@@ -138,7 +138,7 @@ void Application2D::update(float deltaTime) {
 		User.m_userHit = True;
 		User.m_userHP -= 1;
 	}
-	// Game Reset in any state 
+	// Game Reset at end screen mode 
 	(input->isKeyDown(aie::INPUT_KEY_R) && m_GameOver == True)? (shutdown(), startup()) : 0;
 
 	// If HP gets to 0 close game 
